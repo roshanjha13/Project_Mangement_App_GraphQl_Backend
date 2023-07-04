@@ -8,6 +8,7 @@ const {
   GraphQLList,
 } = require("graphql");
 
+//client type
 const ClientType = new GraphQLObjectType({
   name: "Client",
   fields: () => ({
@@ -18,9 +19,40 @@ const ClientType = new GraphQLObjectType({
   }),
 });
 
+//project type
+const ProjectType = new GraphQLObjectType({
+  name: "Project",
+  fields: () => ({
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    status: { type: GraphQLString },
+    phone: { type: GraphQLString },
+  }),
+});
+
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
+    projects: {
+      type: new GraphQLList(ProjectType),
+      resolve(parent, args) {
+        return projects;
+      },
+    },
+    //single data for get
+    project: {
+      type: ProjectType,
+      args: {
+        id: {
+          type: GraphQLID,
+        },
+      },
+      resolve(parent, args) {
+        return projects.find((project) => project.id === args.id);
+      },
+    },
+
     //get all data
     clients: {
       type: new GraphQLList(ClientType),
