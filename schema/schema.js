@@ -5,6 +5,7 @@ const {
   GraphQLString,
   GraphQLID,
   GraphQLSchema,
+  GraphQLList,
 } = require("graphql");
 
 const ClientType = new GraphQLObjectType({
@@ -13,20 +14,29 @@ const ClientType = new GraphQLObjectType({
     id: { type: GraphQLString },
     name: { type: GraphQLString },
     email: { type: GraphQLString },
+    phone: { type: GraphQLString },
   }),
 });
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
+    //get all data
     clients: {
+      type: new GraphQLList(ClientType),
+      resolve(parent, args) {
+        return clients;
+      },
+    },
+    //single data for get
+    client: {
       type: ClientType,
       args: {
         id: {
           type: GraphQLID,
         },
       },
-      resolve(parentValue, args) {
+      resolve(parent, args) {
         return clients.find((client) => client.id === args.id);
       },
     },
